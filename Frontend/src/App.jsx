@@ -25,8 +25,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register/>} />
-        
-        {/* Use ProtectedRoute for roles */}
         <Route
           path="/admin"
           element={
