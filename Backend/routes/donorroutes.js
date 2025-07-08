@@ -168,6 +168,11 @@ router.put('/requests/:requestId/:Stat',authMiddleware(['donor']),async (req,res
   const stat=req.params.Stat;
    const donor = await Donor.findOne({userId: req.body.donorId});
    const receiver= await Donor.findOne({userId: req.body.requestOwner});
+   console.log(donor);
+   
+   if(!donor){
+    return res.status(203).json({ message: 'Please Create Your Profile'});
+   }
    const requests= await Requests.findOneAndUpdate(
     {_id: requestId},
       { $set: { status: stat} }, 
@@ -181,7 +186,7 @@ router.put('/requests/:requestId/:Stat',authMiddleware(['donor']),async (req,res
       });
       await receiver.save();
     }
-  
+   
     
      res.status(200).json({ message: 'Request Accepted and Notified  notified'});
 

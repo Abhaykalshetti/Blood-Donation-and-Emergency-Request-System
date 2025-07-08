@@ -5,6 +5,7 @@ import {
     Building2 as Hospital, Phone, FileText, User, Droplet, Users
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const getUserIdFromToken = (token) => {
     try {
@@ -35,6 +36,7 @@ function RequestSystem() {
     const [otherRequests, setOtherRequests] = useState([]);
     const [loadingMy, setLoadingMy] = useState(true);
     const [loadingOthers, setLoadingOthers] = useState(true);
+    const navigate= useNavigate();
 
     const [formData, setFormData] = useState({
         patientName: userName,
@@ -128,15 +130,20 @@ function RequestSystem() {
             return;
         }
         try {
-            await axios.put(`/api/requests/${requestId}/${"Accepted"}`, { donorId: currentUserId,requestOwner: requestUser }, {
+           const response= await axios.put(`/api/requests/${requestId}/${"Accepted"}`, { donorId: currentUserId,requestOwner: requestUser }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
-            toast.success(`You have accepted Request ${requestId}!`);
+            if(response.status===203){
+                alert(response.data.message);
+                navigate("/donor-profile")
+            }else{
+ alert(`You have accepted Request ${requestId}!`);
             fetchRequests();
+            }
+           
         } catch (error) {
             console.error('Error accepting request:', error.response?.data || error.message);
-            toast.error("Failed to accept request.");
+            alert("Failed to accept request.");
         }
     };
 
@@ -148,12 +155,16 @@ function RequestSystem() {
             return;
         }
         try {
-            await axios.put(`/api/requests/${requestId}/${"Cancelled"}`, { donorId: currentUserId,requestOwner: requestUser }, {
+            const res= await axios.put(`/api/requests/${requestId}/${"Cancelled"}`, { donorId: currentUserId,requestOwner: requestUser }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
-            toast.success(`You have Declined Request ${requestId}!`);
+              if(res.status===203){
+                alert(res.data.message);
+                navigate("/donor-profile")
+            }else{
+              alert(`You have accepted Request ${requestId}!`);
             fetchRequests();
+            }
         } catch (error) {
             console.error('Error declining request:', error.response?.data || error.message);
             toast.error("Failed to Decline request.");
