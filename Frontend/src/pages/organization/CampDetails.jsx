@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from "axios";
 import { toast } from 'sonner';
 import { Pencil, Trash2, Eye, Upload, Calendar, Clock, Users, Droplets, MapPin, Phone, FileText, Building, User, AlertCircle, Save, Plus } from 'lucide-react';
+import api from '../../services/api';
 
 
 function CampDetails() {
@@ -32,6 +33,8 @@ function CampDetails() {
   const [editingId, setEditingId] = useState(null);
 
   const handleSubmit = async (e) => {
+    console.log(formData);
+    
     e.preventDefault();
 
     if (editingId !== null) {
@@ -45,9 +48,16 @@ function CampDetails() {
       toast.success('Camp added successfully!');
     }
 
+    let form=new FormData();
+    
+     form.append('pdffile',formData.licenseDocument);
+    form.append('textData',JSON.stringify(formData));
+   console.log(formData.licenseDocument);
+   
     try {
-      await axios.post("/api/camp-details", formData, {
+      await api.post("/api/camp-details", form, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${localStorage.getItem("token")}`,
         }
       });
@@ -90,10 +100,8 @@ function CampDetails() {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, licenseDocument: file });
-    }
+       setFormData( ({ ...formData, licenseDocument: e.target.files[0]}));   
+     
   };
 
   const CampCard = ({ camp }) => (

@@ -5,6 +5,7 @@ import { Users, Building2, Activity, TrendingUp, AlertCircle, Loader2 } from 'lu
 import TabNavigation from './TabNavigation';
 import DonorTable from './DonorTable';
 import DonorDialog from './DonorDialog';
+import api from '../../services/api';
 
 function ManageDonors() {
   const [donors, setDonors] = useState([]);
@@ -19,7 +20,7 @@ function ManageDonors() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('/api/getAllDonors', {
+        const response = await api.get('/api/getAllDonors', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

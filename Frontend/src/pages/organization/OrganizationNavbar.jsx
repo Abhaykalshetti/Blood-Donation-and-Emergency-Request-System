@@ -1,10 +1,13 @@
 
-import React from "react";
+import React,{useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Building2, Calendar, Users, LogOut, Menu } from "lucide-react";
+import { FaBell } from "react-icons/fa";
 
 const OrganizationNavbar = () => {
   const navigate = useNavigate();
+ const [hasNotifications, setHasNotifications] = useState(false);
+
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -48,10 +51,18 @@ const OrganizationNavbar = () => {
           <Users size={18} />
           <span>Manage Registrations</span>
         </Link>
+           {/* Notification Bell */}
+                   <Link to="/organization-notifications" className="relative group">
+                     <FaBell className="text-lg text-red-700 hover:text-red-600 transition duration-200" />
+                     {hasNotifications && (
+                       <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-600 rounded-full animate-ping border border-white" />
+                     )}
+                   </Link>
         <button
           onClick={logout}
           className="flex items-center space-x-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm font-medium"
         >
+
           <LogOut size={18} />
           <span>Logout</span>
         </button>

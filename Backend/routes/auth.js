@@ -4,8 +4,6 @@ import jwt  from "jsonwebtoken";
 import User  from "../models/User.js";
 
 const router = express.Router();
-const jwtSecret = "your_jwt_secret"; // Use environment variable in production
-
 // Register User
 router.post("/register", async (req, res) => {
   
@@ -44,7 +42,7 @@ router.post("/login", async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, jwtSecret, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
     
     res.json({ token, role: user.role });
 

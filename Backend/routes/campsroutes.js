@@ -2,10 +2,11 @@ import express from "express";
 import authMiddleware from "../middleware/authMiddleware.js";
 import Camp from "../models/organization.js"
 import Donor from "../models/donor.js"
+import upload from "../config/multer.js"
 const router = express.Router();
 
-router.post('/camp-details',authMiddleware(['organization']), async (req,res)=>{
-    const {
+router.post('/camp-details',authMiddleware(['organization']),upload.single('pdffile'), async (req,res)=>{
+    let {
       name,
     organizer,
     date,
@@ -14,6 +15,7 @@ router.post('/camp-details',authMiddleware(['organization']), async (req,res)=>{
     expectedDonors,
     licenseNumber,
     licenseExpiry,
+    licenseDocument,
     bloodBankName,
     bloodBankAddress,
     medicalOfficerName,
@@ -23,8 +25,12 @@ router.post('/camp-details',authMiddleware(['organization']), async (req,res)=>{
     location,
     equipmentAvailable,
     emergencyContact,
-    additionalNotes}=req.body;
+    additionalNotes}=JSON.parse(req.body.textData);
+    
+    licenseDocument=req.file.filename
+    
 const status="pending";
+const expireAt = new Date(`${date}T${time}:00`);
 let user= new Camp({
     userId:req.userId,
     name,
@@ -36,6 +42,7 @@ let user= new Camp({
     expectedDonors,
     licenseNumber,
     licenseExpiry,
+    licenseDocument,
     bloodBankName,
     bloodBankAddress,
     medicalOfficerName,
@@ -45,7 +52,8 @@ let user= new Camp({
     location,
     equipmentAvailable,
     emergencyContact,
-    additionalNotes
+    additionalNotes,
+    expireAt,
 })
 try {
   await user.save();
@@ -60,7 +68,16 @@ router.get("/organization/camps",authMiddleware(['organization']),async (req,res
   let requireddata= await Camp.find({
     userId: req.user.id
   })
-  res.json(requireddata);
+ const data = [];
+let num=0;
+requireddata.forEach(obj=>{
+ obj.notifications.forEach(key=>{
+    data.push(key);
+ })
+
+ 
+})
+  res.json({noti:data,data: requireddata});
 })
 router.get("/all",authMiddleware(['admin']),async (req,res)=>{
     let alldata= await Camp.find();
@@ -86,17 +103,19 @@ router.patch("/camps/:campId",authMiddleware(["admin"]),async (req, res) => {
       const stat  = req.body.status;
 
       const camp = await  Camp.findOneAndUpdate(
-        { _id: req.params.campId },    // Filter by campId
-        { $set: { status: stat } },  // Update the status field
-        { new: true }                  // Return the updated document
+        { _id: req.params.campId },    
+        { $set: { status: stat } },  
+        { new: true }                  
       );
-  
+       camp.notifications.push({
+        sender: `Admin Message`,
+        message: `Your Camp has been ${stat} by admin`,
+        timestamp: new Date()
+      });
       if (!camp) {
         return res.status(404).json({ message: 'Camp not found' });
       }
-      
       if (req.user.role !== 'admin') {
-       
         return res.status(403).json({ message: 'Not authorized' });
       }
       await camp.save();
@@ -117,17 +136,33 @@ router.patch("/camps/:campId",authMiddleware(["admin"]),async (req, res) => {
     const usersToAdd = Array.isArray(registeredUsers) ? registeredUsers : [registeredUsers];
 
     try {
-        const updatedCamp = await Camp.findByIdAndUpdate(
-            campId,
-            { $push: { registeredUsers: { $each: usersToAdd } } },
-            { new: true }
-        );
+      // Step 1: Find the camp
+const camp = await Camp.findById(campId);
+if (!camp) {
+  return res.status(404).json({ message: 'Camp not found' });
+}
 
-        if (!updatedCamp) {
-            return res.status(404).json({ message: 'Camp not found' });
-        }
+// Step 2: Filter only users not already registered
+const usersToActuallyAdd = usersToAdd.filter((newUser) => {
+  return !camp.registeredUsers.some(
+    (existingUser) => existingUser._id.toString() === newUser._id
+  );
+});
 
-        res.status(200).json({ message: 'User(s) added to registeredUsers', camp: updatedCamp });
+// Step 3: If all users are already registered
+if (usersToActuallyAdd.length === 0) {
+  return res.status(200).json({ message: 'User(s) already registered', camp });
+}
+
+// Step 4: Update camp by pushing only new users
+const updatedCamp = await Camp.findByIdAndUpdate(
+  campId,
+  { $push: { registeredUsers: { $each: usersToActuallyAdd } } },
+  { new: true }
+);
+
+res.status(200).json({ message: 'User(s) added to registeredUsers', camp: updatedCamp });
+
     } catch (error) {
         console.error('Error adding registered users:', error);
         res.status(500).json({ message: 'Server error', error });

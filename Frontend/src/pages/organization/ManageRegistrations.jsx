@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Calendar, MapPin, Users, Eye, Trash2, User, Phone, Mail, Clock, Building, FileText, Activity } from 'lucide-react';
+import api from '../../services/api';
 
 // ... keep existing code (formatDate function)
 const formatDate = (dateString) => {
@@ -221,7 +222,7 @@ const ManageRegistrations = () => {
         if (!window.confirm("Are you sure you want to remove this applicant?")) return;
 
         try {
-            await axios.put(`/api/remove-registered-user/${campId}`, { userId },{
+            await api.put(`/api/remove-registered-user/${campId}`, { userId },{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -229,7 +230,7 @@ const ManageRegistrations = () => {
             alert("Applicant removed successfully!");
             // Refresh data
             setSelectedCamp(null); // close modal
-            const res = await axios.get('/api/organization/camps', {
+            const res = await api.get('/api/organization/camps', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCamps(res.data);
@@ -241,7 +242,7 @@ const ManageRegistrations = () => {
 
     const handleViewUser = async (userId) => {
         try {
-            const res = await axios.get(`/api/profile/${userId}`,{
+            const res = await api.get(`/api/profile/${userId}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -257,10 +258,12 @@ const ManageRegistrations = () => {
         const fetchOrganizationCamps = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get('/api/organization/camps', {
+                const response = await api.get('/api/organization/camps', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                setCamps(response.data);
+                setCamps(response.data.data);
+                console.log(response.data);
+                
             } catch (err) {
                 console.error(err);
                 setError(err.response?.data?.message || 'Failed to load camps.');
@@ -413,6 +416,20 @@ const ManageRegistrations = () => {
                                         <p className="text-sm text-gray-600">License Expiry</p>
                                         <p className="font-semibold text-gray-800">{formatDate(camp.licenseExpiry)}</p>
                                     </div>
+                                    {camp.licenseDocument && (
+      <div className="flex items-center gap-3 text-gray-700">
+        <FileText className="w-5 h-5 text-red-500" />
+        <span className="font-medium">License Document:</span>
+        <a
+          href={`http://localhost:3000/uploads/documents/${camp.licenseDocument}`} // Correct path for web
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline hover:text-blue-800"
+        >
+          View PDF
+        </a>
+      </div>
+    )}
                                 </div>
                             </div>
 

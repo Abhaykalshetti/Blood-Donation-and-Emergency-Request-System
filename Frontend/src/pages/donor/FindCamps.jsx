@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import DonorNavbar from './DonorNavbar';
 import { Search, MapPin, Calendar, Clock, Phone, Users, Building, Filter } from 'lucide-react';
+import api from '../../services/api';
 
 function FindCamps() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,13 +15,13 @@ function FindCamps() {
 
   const handleRegister = async (campId) => {
     console.log(campId);
-    const res = await axios.get('/api/get-profile', {
+    const res = await api.get('/api/get-profile', {
       headers: { 
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     });
     try {
-      const response = await axios.put(`/api/update-registered-users/${campId}`, {
+      const response = await api.put(`/api/update-registered-users/${campId}`, {
         registeredUsers: [
           {
             username: res.data.fullName,
@@ -34,7 +35,7 @@ function FindCamps() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert('User registered successfully');
+      alert(response.data.message);
     } catch (error) {
       if (error.response) {
         console.error('Server error:', error.response.data.message || error.response.statusText);
@@ -52,7 +53,7 @@ function FindCamps() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get('/api/findcamps', {
+        const response = await api.get('/api/findcamps', {
       headers: { 
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }

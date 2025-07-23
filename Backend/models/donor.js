@@ -17,8 +17,9 @@ const donorschema = new mongoose.Schema({
  emergencyContactName:  { type: String},
     emergencyContactRelationship:{ type: String},
    emergencyContactPhone: { type: String},
+   photo:{type: Object },
    licenseNumber: { type: String},
-   licensePdf: { type: String},
+   licensePdf: { type: Object}, 
    storageCapacity: { type: String},
    operatingHours: { type: String},
     notifications: [

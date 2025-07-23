@@ -9,8 +9,11 @@ const requests = new mongoose.Schema({
       doctorContact:  { type: String},
       reason:  { type: String},
       status: { type: String},
-      requestDate:  { type: String}
-
+       requestDate: {
+    type: Date,
+    default: Date.now,
+    expires: 259200 // 3 days in seconds
+  },
 });
 
 const Entry = mongoose.model('EmergencyRequests', requests);

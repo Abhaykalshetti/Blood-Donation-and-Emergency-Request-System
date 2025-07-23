@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaBell } from "react-icons/fa";
+import api from "../../services/api";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -11,19 +12,18 @@ const Notifications = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`/api/get-profile`, {
+        const response = await api.get(`/api/organization/camps`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-       console.log(response.data.notifications);
-       
-        setNotifications(response.data.notifications || []);
+        console.log(response.data);
+        
+        setNotifications(response.data.noti|| []);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
-
     fetchMessages();
   }, []);
     const formatDateTime = (isoDate) => {

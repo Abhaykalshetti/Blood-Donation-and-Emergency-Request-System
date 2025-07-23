@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { User, MapPin, Phone, Mail, Home, Calendar, Droplets, Edit, Clock, FileText, Building2 } from 'lucide-react';
+import api from '../../services/api';
 
 function DonorProfile2() {
   const [showTypeSelection, setShowTypeSelection] = useState(false);
@@ -24,11 +25,11 @@ function DonorProfile2() {
     emergencyContactRelationship: '',
     emergencyContactPhone: '',
     licenseNumber: '',
-    licensePdf: '',
+    licensePdf: null,
     storageCapacity: '',
     operatingHours: '',
+    photo:null,
   });
-
   const [previewImage, setPreviewImage] = useState('');
   const [licensePdfName, setLicensePdfName] = useState('');
 
@@ -38,18 +39,20 @@ function DonorProfile2() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('/api/get-profile', {
+        const res = await api.get('/api/get-profile', {
           headers: { 
             Authorization: `Bearer ${localStorage.getItem("token")}`
           }
         });
+        console.log(res.data);
         
         if (res.status === 201) {
+
+          setPreviewImage(`http://localhost:3000/uploads/images/${res.data.photo}`)
           setShowTypeSelection(false)
           setFormData(res.data);
           setIsEditing(true);
         } else {
-          console.log(" fj");
           ShowSlection()
           setShowTypeSelection(true)
           setIsEditing(false);
@@ -74,31 +77,33 @@ function DonorProfile2() {
   }
 
   const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageData = reader.result;
-        setPreviewImage(imageData);
-        setFormData(prev => ({ ...prev, profilePicture: imageData }));
-      };
-      reader.readAsDataURL(file);
-    }
+      setFormData({ ...formData, photo: e.target.files[0] })
+      console.log(formData);
+      
   };
 
   const handlePdfChange = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file) { 
       setLicensePdfName(file.name);
-      setFormData(prev => ({ ...prev, licensePdf: file }));
+      setFormData(({ ...formData, licensePdf: e.target.files[0] }));      
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const form=new FormData();
+    if(formData.userType==='donor'){
+       form.append('textData',JSON.stringify(formData));
+    form.append('file',formData.photo);
+    }else{
+    form.append('textData',JSON.stringify(formData));
+    form.append('file',formData.licensePdf);
+    }
     try {
-      const response = await axios.post('/api/profile', formData, {
+      const response = await api.post('/api/profile', form, {
         headers: { 
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       });
@@ -210,6 +215,21 @@ function DonorProfile2() {
                     <span>{formData.operatingHours}</span>
                   </div>
                 </div>
+                 {formData.licensePdf && (
+      <div className="flex items-center gap-3 text-gray-700">
+        <FileText className="w-5 h-5 text-red-500" />
+        <span className="font-medium">License Document:</span>
+        <a
+          href={`http://localhost:3000/uploads/documents/${formData.licensePdf}`} // Correct path for web
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline hover:text-blue-800"
+        >
+
+      {formData.licensePdf}
+        </a>
+      </div>
+    )}
               </div>
             </>
           )}
@@ -269,6 +289,31 @@ function DonorProfile2() {
   const renderDonorForm = () => (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Profile Picture */}
+                  <div className="flex flex-col items-center mb-8">
+                    <div className="w-40 h-40 rounded-full bg-red-100 overflow-hidden mb-6 border-4 border-red-200 shadow-lg">
+                      {previewImage ? (
+                        <img src={previewImage} alt="Profile Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <User className="w-20 h-20 text-red-400" />
+                        </div>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                      id="profile-picture"
+                    />
+                    <label
+                      htmlFor="profile-picture"
+                      className="cursor-pointer bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors font-semibold shadow-md hover:shadow-lg"
+                    >
+                      Upload Photo
+                    </label>
+                  </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
           <input
@@ -510,31 +555,6 @@ function DonorProfile2() {
 
               <div className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-8">
-                  {/* Profile Picture */}
-                  <div className="flex flex-col items-center mb-8">
-                    <div className="w-40 h-40 rounded-full bg-red-100 overflow-hidden mb-6 border-4 border-red-200 shadow-lg">
-                      {previewImage ? (
-                        <img src={previewImage} alt="Profile Preview" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <User className="w-20 h-20 text-red-400" />
-                        </div>
-                      )}
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                      id="profile-picture"
-                    />
-                    <label
-                      htmlFor="profile-picture"
-                      className="cursor-pointer bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors font-semibold shadow-md hover:shadow-lg"
-                    >
-                      Upload Photo
-                    </label>
-                  </div>
 
                   {/* Dynamic Form Content */}
                   <div className="bg-gray-50 p-6 rounded-xl">

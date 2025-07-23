@@ -19,9 +19,20 @@ function DonorDialog({ open, donor, onClose }) {
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                  {donor.fullName?.charAt(0)?.toUpperCase() || (donor.userType === 'donor' ? 'D' : 'B')}
-                </div>
+                <div className="w-12 h-12 bg-white rounded-full overflow-hidden flex items-center justify-center text-white font-bold text-lg">
+  {donor.photo ? (
+    <img
+      src={`http://localhost:3000/uploads/images/${donor.photo}`}
+      alt="Profile"
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <span className="text-red-600">
+      {donor.fullName?.charAt(0)?.toUpperCase() || (donor.fullName === 'donor' ? 'D' : 'B')}
+    </span>
+  )}
+</div>
+
                 <div>
                   <h3 className="text-xl font-bold text-white">
                     {donor.userType === 'donor' ? 'Donor Profile' : 'Blood Bank Profile'}
@@ -170,12 +181,21 @@ function BloodBankDetails({ donor }) {
       fields: [
         { label: 'Organization Name', value: donor.fullName, icon: <Building2 className="w-4 h-4" /> },
         { label: 'License Number', value: donor.licenseNumber, icon: <Shield className="w-4 h-4" /> },
-        { 
-          label: 'Status', 
-          value: donor.status || 'Active', 
-          icon: <Activity className="w-4 h-4" />,
-          special: 'status'
-        },
+       {
+  label: 'License Document',
+  value: (
+    <a
+      href={`http://localhost:3000/uploads/documents/${donor.licensePdf}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 underline hover:text-blue-800"
+    >
+      View PDF
+    </a>
+  ),
+  icon: <FileText className="w-4 h-4 text-red-500" />,
+}
+
       ]
     },
     {

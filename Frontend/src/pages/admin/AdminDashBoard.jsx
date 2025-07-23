@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   TrendingUp
 } from "lucide-react";
+import api from "../../services/api";
 
 const AdminDashboard = () => {
   const [message, setMessage] = useState("");
@@ -22,7 +23,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get("/api/admin", {
+        const response = await api.get("/api/admin", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

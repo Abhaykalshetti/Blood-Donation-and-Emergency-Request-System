@@ -9,6 +9,7 @@ const campschema = new mongoose.Schema({
       status:{type: String},
       contact:{ type: String},
       expectedDonors: { type: String },
+      licenseDocument:{type: Object},
       licenseNumber: { type: String},
       licenseExpiry:{ type: String},
       bloodBankName: { type: String},
@@ -28,7 +29,15 @@ const campschema = new mongoose.Schema({
       location: String,
       _id: String
     }
+  ],
+  notifications: [
+    {
+      sender: { type: String, required: true }, // e.g., "Admin" or "Organization"
+      message: { type: String, required: true },
+      timestamp: { type: Date, default: Date.now }
+    }
   ]
+  
 });
 
 const Entry = mongoose.model('CampData', campschema);

@@ -5,7 +5,7 @@ import { FaBell } from "react-icons/fa";
 
 const DonorNavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [hasNotifications, setHasNotifications] = useState(true);
+  const [hasNotifications, setHasNotifications] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 

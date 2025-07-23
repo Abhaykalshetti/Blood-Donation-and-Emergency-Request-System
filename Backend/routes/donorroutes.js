@@ -2,14 +2,17 @@ import express from "express";
 import authMiddleware from "../middleware/authMiddleware.js";
 import Donor from "../models/donor.js"
 import Requests from "../models/emergencyRequest.js"
+import upload from "../config/multer.js";
+import path from "path";
+import fs from 'fs';
 const router = express.Router();
 
 
 // Add a new diary entry
-router.post("/profile", authMiddleware(['donor']), async (req, res) => {
-  console.log(req.body);
+router.post("/profile", authMiddleware(['donor']), upload.single('file'), async (req, res) => {
+const ext = path.extname(req.file.filename).toLowerCase();
 
-  const {
+  let {
     userType,
     fullName,
     phoneNumber,
@@ -25,14 +28,19 @@ router.post("/profile", authMiddleware(['donor']), async (req, res) => {
     emergencyContactName,
     emergencyContactRelationship,
     emergencyContactPhone,
+    photo, 
     licenseNumber,
     licensePdf,
     storageCapacity,
     operatingHours
-  } = req.body;
+  } =  JSON.parse(req.body.textData);
+  if(userType==='donor'){  photo = req.file ? req.file.filename : null;}
+else{  licensePdf = req.file ? req.file.filename : null;}
 
   try {
-    const existingEntry = await Donor.findOne({ userId: req.userId });
+    
+    
+    let existingEntry = await Donor.findOne({ userId: req.userId });
 
     if (existingEntry) {
       existingEntry.userType = userType;
@@ -51,15 +59,36 @@ router.post("/profile", authMiddleware(['donor']), async (req, res) => {
       existingEntry.emergencyContactRelationship = emergencyContactRelationship;
       existingEntry.emergencyContactPhone = emergencyContactPhone;
       existingEntry.licenseNumber = licenseNumber;
-      existingEntry.licensePdf = licensePdf;
       existingEntry.storageCapacity = storageCapacity;
       existingEntry.operatingHours = operatingHours;
 
-      await existingEntry.save();
-      res.json({ message: "Profile updated successfully" });
+        if (ext === '.jpg' || ext === '.jpeg' || ext === '.png') {
+           const oldPath = path.join('uploads\\images',existingEntry.photo)
+           fs.unlink(oldPath, (err) => {
+           if (err) console.error('Failed to delete old image:', err);
+          });
+          
+      existingEntry.photo = photo;
+         }
+       // for liscence pdf or document for uploadig for blood banks
+         if (ext==='.pdf') {
+           const oldPath1= path.join('uploads\\documents',existingEntry.licensePdf)
+           fs.unlink(oldPath1, (err) => {
+           if (err) console.error('Failed to delete old image:', err);
+          });
+          
+          
+      existingEntry.licensePdf = licensePdf;
+         }
+
+await existingEntry.save();
+    res.json({ message: "Profile updated successfully" });
+     
+        
+
     } else {
       // Create new entry
-      const newEntry = new Donor({
+      let newEntry = new Donor({
         userId: req.userId,
         userType,
         fullName,
@@ -76,6 +105,7 @@ router.post("/profile", authMiddleware(['donor']), async (req, res) => {
         emergencyContactName,
         emergencyContactRelationship,
         emergencyContactPhone,
+        photo,
         licenseNumber,
         licensePdf,
         storageCapacity,
@@ -106,9 +136,8 @@ router.post("/profile", authMiddleware(['donor']), async (req, res) => {
 
   });;
  router.get("/getAllDonors",authMiddleware(['admin']), async (req,res)=>{
+
       let Donors= await Donor.find();
-      console.log(Donors);
-      
          res.json(Donors);
           
  })
@@ -168,8 +197,7 @@ router.put('/requests/:requestId/:Stat',authMiddleware(['donor']),async (req,res
   const stat=req.params.Stat;
    const donor = await Donor.findOne({userId: req.body.donorId});
    const receiver= await Donor.findOne({userId: req.body.requestOwner});
-   console.log(donor);
-   
+
    if(!donor){
     return res.status(203).json({ message: 'Please Create Your Profile'});
    }

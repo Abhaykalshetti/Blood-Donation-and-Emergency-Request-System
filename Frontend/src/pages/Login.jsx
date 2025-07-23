@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import {useNavigate, Link} from "react-router-dom";
+import api from "../services/api.js";
 
 
 const Login = ({ setUser }) => {
@@ -15,7 +16,7 @@ const Login = ({ setUser }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/auth/login", { email, password });
+      const res = await api.post("/api/auth/login", { email, password });
       if(res.status === 400){
         setError("Invalid credentials")
         return;

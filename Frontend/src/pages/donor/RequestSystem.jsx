@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 const getUserIdFromToken = (token) => {
     try {
@@ -38,8 +39,10 @@ function RequestSystem() {
     const [loadingOthers, setLoadingOthers] = useState(true);
     const navigate= useNavigate();
 
+
+
     const [formData, setFormData] = useState({
-        patientName: userName,
+        patientName: "",
         bloodType: "",
         urgency: "Normal",
         hospital: "",
@@ -49,7 +52,7 @@ function RequestSystem() {
         requestDate: new Date().toISOString().split('T')[0],
         userId: currentUserId,
     });
-
+     
     const fetchRequests = async () => {
         if (!currentUserId || !token) {
             console.warn("User not authenticated or token missing. Cannot fetch requests.");
@@ -60,7 +63,7 @@ function RequestSystem() {
 
         setLoadingMy(true);
         try {
-            const myRequestsRes = await axios.get("/api/requests/my", {
+            const myRequestsRes = await api.get("/api/requests/my", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMyRequests(myRequestsRes.data);
@@ -73,7 +76,7 @@ function RequestSystem() {
 
         setLoadingOthers(true);
         try {
-            const otherRequestsRes = await axios.get("/api/requests/others", {
+            const otherRequestsRes = await api.get("/api/requests/others", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setOtherRequests(otherRequestsRes.data);
@@ -85,6 +88,7 @@ function RequestSystem() {
         }
     };
 
+  
     useEffect(() => {
         fetchRequests();
     }, [currentUserId, token]);
@@ -99,7 +103,7 @@ function RequestSystem() {
         try {
             const requestData = { ...formData, userId: currentUserId };
 
-            await axios.post('/api/requests', requestData, {
+            await api.post('/api/requests', requestData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -130,7 +134,7 @@ function RequestSystem() {
             return;
         }
         try {
-           const response= await axios.put(`/api/requests/${requestId}/${"Accepted"}`, { donorId: currentUserId,requestOwner: requestUser }, {
+           const response= await api.put(`/api/requests/${requestId}/${"Accepted"}`, { donorId: currentUserId,requestOwner: requestUser }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if(response.status===203){
@@ -155,7 +159,7 @@ function RequestSystem() {
             return;
         }
         try {
-            const res= await axios.put(`/api/requests/${requestId}/${"Cancelled"}`, { donorId: currentUserId,requestOwner: requestUser }, {
+            const res= await api.put(`/api/requests/${requestId}/${"Cancelled"}`, { donorId: currentUserId,requestOwner: requestUser }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
               if(res.status===203){
@@ -191,6 +195,7 @@ function RequestSystem() {
     };
 
     const handleInputChange = (e) => {
+      
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 

@@ -13,6 +13,7 @@ import {
   Hospital,
   Info,
 } from "lucide-react";
+import api from "../../services/api";
 
 const OrganizationDashboard = () => {
   const [message, setMessage] = useState("");
@@ -21,7 +22,7 @@ const OrganizationDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get("/api/organization", {
+        const response = await api.get("/api/organization", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

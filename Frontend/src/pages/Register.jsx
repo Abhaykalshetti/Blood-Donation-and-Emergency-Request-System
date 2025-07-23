@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import {  useNavigate } from "react-router-dom";
-
+import api from "../services/api.js";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -14,7 +14,7 @@ const navigate=useNavigate();
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/auth/register", { name, email, password, role });
+      await api.post("/api/auth/register", { name, email, password, role });
       setMessage("User registered successfully!");
       navigate("/")
     } catch (err) {
@@ -70,10 +70,9 @@ const navigate=useNavigate();
             >
               <option value="donor">Donor</option>
               <option value="organization">Organization</option>
-              <option value="admin">Admin</option>
             </select>
           </div>
-          <button
+        <button
             type="submit"
             className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >

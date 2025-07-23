@@ -1,5 +1,4 @@
- import jwt from  "jsonwebtoken";
-const jwtSecret = "your_jwt_secret"; // Use environment variable in production
+ import jwt from  "jsonwebtoken"; // Use environment variable in production
 
 const authMiddleware = (roles = []) => { 
   return (req, res, next) => {
@@ -9,7 +8,7 @@ const authMiddleware = (roles = []) => {
     if (!token) return res.status(401).json({ message: "Access Denied" });
 
     try {
-      const decoded = jwt.verify(token, jwtSecret);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
       req.user = decoded;
       req.userId=decoded.id;

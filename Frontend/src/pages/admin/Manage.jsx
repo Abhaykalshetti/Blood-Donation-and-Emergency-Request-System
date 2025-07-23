@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Eye, Check, X, Calendar, MapPin, User, Building, Clock, Users } from 'lucide-react';
 import axios from "axios";
 import CampDetails from './CampDetails';
+import api from '../../services/api';
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
@@ -23,12 +24,14 @@ function Manage() {
   
   useEffect(() => {
     const fetchData = async () => {
-      let res = await axios.get('/api/all', {
+      let res = await api.get('/api/all', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       setCamps(res.data);
+      console.log(res.data);
+      
     }
     fetchData();
   }, [])
@@ -37,7 +40,7 @@ function Manage() {
     console.log(campId);
     
     try {
-      const response = await axios.patch(`/api/camps/${campId}`, { status: "accepted" }, {
+      const response = await api.patch(`/api/camps/${campId}`, { status: "accepted" }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("token")}`,
         }
@@ -52,7 +55,7 @@ function Manage() {
 
   const handleReject = async (campId) => {
     try {
-      const response2 = await axios.patch(`/api/camps/${campId}`, { status: "rejected" }, {
+      const response2 = await api.patch(`/api/camps/${campId}`, { status: "rejected" }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("token")}`,
         }

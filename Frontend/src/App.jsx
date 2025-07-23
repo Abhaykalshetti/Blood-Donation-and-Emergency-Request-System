@@ -14,7 +14,8 @@ import RequestSystem from './pages/donor/RequestSystem.jsx';
 import ManageDonors from './pages/admin/ManageDonors.jsx';
 import ManageRegistrations from './pages/organization/ManageRegistrations.jsx';
 import Layout from './pages/Layout.jsx';
-import Notifications from './pages/donor/Notifications.jsx';
+import DonorNotifications from './pages/donor/DonorNotifications.jsx';
+import Notifications from './pages/organization/Notifications.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -87,7 +88,7 @@ function App() {
           path="/donor-notifications"
           element={
             <ProtectedRoute allowedRoles={['donor']}>
-              <Notifications/>
+              <DonorNotifications/>
             </ProtectedRoute>
           }
         />
@@ -115,6 +116,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/organization-notifications"
+          element={
+            <ProtectedRoute allowedRoles={['organization']}>
+              <Notifications/>
+            </ProtectedRoute>
+          }
+        />
+        
       </Routes>
       </Layout>
     </Router>

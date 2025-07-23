@@ -8,7 +8,7 @@ import {
   FaHospitalAlt,
   FaHeartbeat,
 } from "react-icons/fa";
-import DonorNavbar from "./DonorNavbar"; // Adjust the path if needed
+import api from "../../services/api";
 
 const DonorDashboard = () => {
   const [message, setMessage] = useState("");
@@ -18,7 +18,7 @@ const DonorDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get("/api/donor", {
+        const response = await api.get("/api/donor", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -29,8 +29,9 @@ const DonorDashboard = () => {
         localStorage.removeItem("role");
         navigate("/");
       }
+       
     };
-
+   
     fetchDashboardData();
   }, [navigate]);
 

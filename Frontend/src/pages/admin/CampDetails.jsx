@@ -27,7 +27,22 @@ function CampDetails({ camp, onClose, onAccept, onReject }) {
         { label: 'Organizer', value: camp.organizer, icon: <User className="w-4 h-4 text-red-500" /> },
         { label: 'Date', value: formatDate(camp.date), icon: <Calendar className="w-4 h-4 text-red-500" /> },
         { label: 'Time', value: camp.time, icon: <Clock className="w-4 h-4 text-red-500" /> },
-        { label: 'Contact Number', value: camp.contact, icon: <Phone className="w-4 h-4 text-red-500" /> }
+        { label: 'Contact Number', value: camp.contact, icon: <Phone className="w-4 h-4 text-red-500" /> },
+        {
+
+    label: 'View File',
+    value: (
+      <a
+        href={`http://localhost:3000/uploads/documents/${camp.licenseDocument}`} // Adjust path if needed
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:underline"
+      >
+      { camp.licenseDocument }
+      </a>
+    ),
+    icon: <FileText className="w-4 h-4 text-red-500" />
+  }
       ]
     },
     {
