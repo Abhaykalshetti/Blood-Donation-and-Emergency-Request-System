@@ -33,7 +33,7 @@ const DonorNavbar = () => {
     <nav className="bg-white border-b border-red-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Left: Logo */}
-        <Link to="/" className="flex items-center space-x-3 text-red-700">
+        <Link to="/donor" className="flex items-center space-x-3 text-red-700">
           <Droplets className="w-8 h-8" />
           <span className="text-2xl font-bold">BloodDonation</span>
         </Link>

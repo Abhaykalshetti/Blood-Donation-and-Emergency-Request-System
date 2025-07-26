@@ -25,7 +25,7 @@ const OrganizationNavbar = () => {
           <Building2 className="h-8 w-8 text-white" />
         </div>
         <div>
-          <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-red-600 transition-colors">
+          <Link to="/organization" className="text-2xl font-bold text-gray-900 hover:text-red-600 transition-colors">
             BloodLink
           </Link>
           <p className="text-sm text-gray-600">Organization Portal</p>
