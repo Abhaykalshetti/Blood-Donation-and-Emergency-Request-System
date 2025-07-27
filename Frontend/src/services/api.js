@@ -1,5 +1,5 @@
 import axios from 'axios';
-const url="https://blood-donation-backend-cyff.onrender.com";
+const url="https://blood-donation-backend-2dva.onrender.com";
 const api = axios.create({
   baseURL: url,
   withCredentials: true, // for JWT cookies if used
