@@ -1,2 +1,2 @@
-const url="http://localhost:3000/";
+const url="https://blood-donation-and-emergency-request.onrender.com";
 export default url;
