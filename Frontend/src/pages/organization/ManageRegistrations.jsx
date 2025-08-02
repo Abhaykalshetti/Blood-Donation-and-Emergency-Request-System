@@ -421,7 +421,7 @@ const ManageRegistrations = () => {
         <FileText className="w-5 h-5 text-red-500" />
         <span className="font-medium">License Document:</span>
         <a
-          href={`${url}uploads/documents/${camp.licenseDocument}`} // Correct path for web
+          href={`${url}/uploads/documents/${camp.licenseDocument}`} // Correct path for web
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 underline hover:text-blue-800"
