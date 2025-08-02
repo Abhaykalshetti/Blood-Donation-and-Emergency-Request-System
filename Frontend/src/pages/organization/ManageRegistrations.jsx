@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Calendar, MapPin, Users, Eye, Trash2, User, Phone, Mail, Clock, Building, FileText, Activity } from 'lucide-react';
 import api from '../../services/api';
-import url from '../../services/api';
+import url from '../../services/url.js';
 // ... keep existing code (formatDate function)
 const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
