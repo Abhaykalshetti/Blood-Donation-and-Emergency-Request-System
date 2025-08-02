@@ -1,6 +1,5 @@
 import axios from 'axios';
 import url from './url';
-const url="https://blood-donation-and-emergency-request.onrender.com";
 const api = axios.create({
   baseURL: url,
   withCredentials: true, // for JWT cookies if used
