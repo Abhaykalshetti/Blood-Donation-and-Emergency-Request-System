@@ -45,7 +45,7 @@ function DonorProfile2() {
             Authorization: `Bearer ${localStorage.getItem("token")}`
           }
         });
-        console.log(res.data);
+        console.log(`${url}/uploads/images/${res.data.photo}`);
         
         if (res.status === 201) {
 
