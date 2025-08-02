@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { User, MapPin, Phone, Mail, Home, Calendar, Droplets, Edit, Clock, FileText, Building2 } from 'lucide-react';
 import api from '../../services/api';
-import url from '../../services/api';
+import url from '../../services/url';
 
 function DonorProfile2() {
   const [showTypeSelection, setShowTypeSelection] = useState(false);
