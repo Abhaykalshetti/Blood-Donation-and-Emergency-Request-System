@@ -14,4 +14,4 @@ api.interceptors.response.use(
   }
 );
 
-export {url,api};
+export default api;
