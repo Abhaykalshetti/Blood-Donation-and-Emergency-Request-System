@@ -34,7 +34,7 @@ function CampDetails({ camp, onClose, onAccept, onReject }) {
     label: 'View File',
     value: (
       <a
-        href={`${url}uploads/documents/${camp.licenseDocument}`} // Adjust path if needed
+        href={`${url}/uploads/documents/${camp.licenseDocument}`} // Adjust path if needed
         target="_blank"
         rel="noopener noreferrer"
         className="text-blue-600 hover:underline"
