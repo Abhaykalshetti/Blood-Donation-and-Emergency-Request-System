@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { X, User, Building2, Phone, Mail, MapPin, Activity, Calendar, FileText, Shield, Clock, Database } from 'lucide-react';
-import { url } from '../../services/api';
+import url  from '../../services/url.js';
 
 function DonorDialog({ open, donor, onClose }) {
   if (!open || !donor) return null;

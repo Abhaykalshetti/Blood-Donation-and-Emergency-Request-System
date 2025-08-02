@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { X, MapPin, Calendar, Clock, Phone, Users, FileCheck, Building, User, Droplet, PenTool as Tool, AlertCircle, FileText } from 'lucide-react';
-import { url } from '../../services/api';
+import url from '../../services/url.js';
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
