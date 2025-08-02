@@ -23,7 +23,7 @@ function DonorDialog({ open, donor, onClose }) {
                 <div className="w-12 h-12 bg-white rounded-full overflow-hidden flex items-center justify-center text-white font-bold text-lg">
   {donor.photo ? (
     <img
-      src={`${url}uploads/images/${donor.photo}`}
+      src={`${url}/uploads/images/${donor.photo}`}
       alt="Profile"
       className="w-full h-full object-cover"
     />
@@ -186,7 +186,7 @@ function BloodBankDetails({ donor }) {
   label: 'License Document',
   value: (
     <a
-      href={`${url}uploads/documents/${donor.licensePdf}`}
+      href={`${url}/uploads/documents/${donor.licensePdf}`}
       target="_blank"
       rel="noopener noreferrer"
       className="text-blue-600 underline hover:text-blue-800"
