@@ -49,7 +49,7 @@ function DonorProfile2() {
         
         if (res.status === 201) {
 
-          setPreviewImage(`${url}uploads/images/${res.data.photo}`)
+          setPreviewImage(`${url}/uploads/images/${res.data.photo}`)
           setShowTypeSelection(false)
           setFormData(res.data);
           setIsEditing(true);
@@ -221,7 +221,7 @@ function DonorProfile2() {
         <FileText className="w-5 h-5 text-red-500" />
         <span className="font-medium">License Document:</span>
         <a
-          href={`${url}uploads/documents/${formData.licensePdf}`} // Correct path for web
+          href={`${url}/uploads/documents/${formData.licensePdf}`} // Correct path for web
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 underline hover:text-blue-800"
