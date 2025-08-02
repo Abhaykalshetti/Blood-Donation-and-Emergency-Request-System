@@ -10,7 +10,10 @@ const router = express.Router();
 
 // Add a new diary entry
 router.post("/profile", authMiddleware(['donor']), upload.single('file'), async (req, res) => {
-const ext = path.extname(req.file.filename).toLowerCase();
+let ext;
+  if(req.file){
+ ext = path.extname(req.file.filename).toLowerCase();
+  }
 
   let {
     userType,

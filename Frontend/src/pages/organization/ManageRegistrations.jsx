@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Calendar, MapPin, Users, Eye, Trash2, User, Phone, Mail, Clock, Building, FileText, Activity } from 'lucide-react';
-import api from '../../services/api';
+import api, { url } from '../../services/api';
 
 // ... keep existing code (formatDate function)
 const formatDate = (dateString) => {
@@ -421,7 +421,7 @@ const ManageRegistrations = () => {
         <FileText className="w-5 h-5 text-red-500" />
         <span className="font-medium">License Document:</span>
         <a
-          href={`http://localhost:3000/uploads/documents/${camp.licenseDocument}`} // Correct path for web
+          href={`${url}uploads/documents/${camp.licenseDocument}`} // Correct path for web
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 underline hover:text-blue-800"
