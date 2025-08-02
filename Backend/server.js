@@ -15,7 +15,7 @@ const app = express();
 
 
 app.use(cors({
-      origin: 'http://localhost:5173',   // ✅ Your frontend origin
+      origin: process.env.FRONTEND_URL,   // ✅ Your frontend origin
   credentials: true,   
 }));
 app.use('/uploads', express.static('uploads'));
